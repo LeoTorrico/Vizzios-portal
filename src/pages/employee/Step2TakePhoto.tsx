@@ -52,8 +52,8 @@ export default function Step2TakePhoto() {
           className="w-full rounded-lg"
         />
         <div className="flex gap-3 w-full">
-          <Button text="Iniciar cámara" onClick={startCamera} />
-          <Button text="Tomar foto" onClick={takePhoto} />
+          <Button text="Iniciar cámara" onClick={startCamera} color="#F6941F" />
+          <Button text="Tomar foto" onClick={takePhoto} color="#F6941F" />
         </div>
         {photo && (
           <img src={photo} alt="captura" className="w-40 h-40 rounded-lg" />

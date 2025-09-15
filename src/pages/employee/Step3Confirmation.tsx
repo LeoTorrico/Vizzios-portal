@@ -1,4 +1,3 @@
-// src/pages/employee/Step3Confirmation.tsx
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { employeeService } from "../../services/employeeService";
