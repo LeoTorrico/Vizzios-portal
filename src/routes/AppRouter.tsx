@@ -3,9 +3,8 @@ import Step1EnterID from "../pages/employee/Step1EnterID";
 import Step2TakePhoto from "../pages/employee/Step2TakePhoto";
 import Step3Confirmation from "../pages/employee/Step3Confirmation";
 import Login from "../pages/admin/Login";
-import Dashboard from "../pages/admin/Dashboard";
 import NotFound from "../pages/NotFound";
-
+import AdminDashboard from "../pages/admin/AdminDashboard";
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -15,7 +14,7 @@ export default function AppRouter() {
         <Route path="/empleado/confirmacion" element={<Step3Confirmation />} />
 
         <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
         <Route path="/" element={<Navigate to="/empleado" />} />
         <Route path="*" element={<NotFound />} />
