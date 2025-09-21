@@ -1,19 +1,16 @@
+import axios from "axios";
 import type { AttendanceDTO } from "../types";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const attendanceService = {
   register: async (data: AttendanceDTO) => {
-    const res = await fetch(`${API_URL}/attendances`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    const res = await axios.post(`${API_URL}/attendances`, data);
+    return res.data;
+  },
 
-    if (!res.ok) {
-      throw new Error(`Error al registrar asistencia: ${res.statusText}`);
-    }
-
-    return await res.json();
+  getAll: async () => {
+    const res = await axios.get(`${API_URL}/attendances`);
+    return res.data;
   },
 };
