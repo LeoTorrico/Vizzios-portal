@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import Button from "../../components/Button";
-import { employeeService } from "../../services/employeeService";
 import StepHeader from "../../components/StepHeader";
+import { useAttendance } from "../../hooks/useAttendance";
 
 export default function Step3Confirmation() {
   const navigate = useNavigate();
-  const id = sessionStorage.getItem("employeeId");
-  const photo = sessionStorage.getItem("employeePhoto");
+  const { registerAttendance, loading } = useAttendance();
+
+  const carnet = sessionStorage.getItem("employeeId"); // tu backend lo llama "carnet"
+  const imageBase64 = sessionStorage.getItem("employeePhoto");
 
   const now = new Date();
   const formattedDateTime = now.toLocaleString("es-BO", {
@@ -18,20 +21,23 @@ export default function Step3Confirmation() {
     second: "2-digit",
   });
 
+  // Estado para IN/OUT
+  const [type, setType] = useState<"IN" | "OUT">("IN");
+
   const handleRegister = async () => {
-    if (!id || !photo) return alert("Faltan datos del empleado");
+    if (!carnet || !imageBase64) return alert("Faltan datos del empleado");
     try {
-      await employeeService.register({
-        id,
-        photo,
-        timestamp: now.toISOString(),
+      await registerAttendance({
+        carnet,
+        type, // <-- dinámico
+        recordedAt: now.toISOString(),
+        imageBase64,
       });
       alert("Asistencia registrada correctamente");
       sessionStorage.clear();
       navigate("/empleado");
-    } catch (err) {
+    } catch {
       alert("Error al registrar asistencia");
-      console.error(err);
     }
   };
 
@@ -50,23 +56,43 @@ export default function Step3Confirmation() {
         </h2>
 
         <div className="w-full bg-gray-50 rounded-xl p-6 flex flex-col items-center space-y-4 border border-gray-200 shadow-sm">
-          {photo && (
+          {imageBase64 && (
             <img
-              src={photo}
+              src={imageBase64}
               alt="captura"
               className="w-40 h-40 rounded-lg object-cover shadow-md"
             />
           )}
           <div className="text-center">
             <p className="text-gray-600 text-sm">Carnet</p>
-            <p className="text-lg font-semibold text-gray-800">{id}</p>
+            <p className="text-lg font-semibold text-gray-800">{carnet}</p>
+          </div>
+
+          {/* Dropdown Entrada / Salida */}
+          <div className="w-full">
+            <label
+              htmlFor="type"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Tipo de registro
+            </label>
+            <select
+              id="type"
+              value={type}
+              onChange={(e) => setType(e.target.value as "IN" | "OUT")}
+              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#036133] focus:outline-none"
+            >
+              <option value="IN">Entrada</option>
+              <option value="OUT">Salida</option>
+            </select>
           </div>
         </div>
 
         <Button
-          text="Registrar asistencia"
+          text={loading ? "Registrando..." : "Registrar asistencia"}
           onClick={handleRegister}
           color="#F6941F"
+          disabled={loading}
         />
       </div>
     </div>

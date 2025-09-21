@@ -89,11 +89,13 @@ export default function Step2TakePhoto() {
 
     const video = videoRef.current;
     const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    canvas.width = 320;
+    canvas.height = 240;
+
     const ctx = canvas.getContext("2d");
     ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageData = canvas.toDataURL("image/png");
+
+    const imageData = canvas.toDataURL("image/jpeg", 0.3);
 
     setPhoto(imageData);
     sessionStorage.setItem("employeePhoto", imageData);
