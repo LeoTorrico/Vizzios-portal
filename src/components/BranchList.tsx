@@ -40,7 +40,7 @@ export default function BranchList({ branches }: { branches: any[] }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {branches.map((branch, index) => (
+        {branches.map((branch) => (
           <div
             key={branch.id}
             className="group relative bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden hover:scale-105"
