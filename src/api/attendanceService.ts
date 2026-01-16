@@ -5,7 +5,14 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const attendanceService = {
   register: async (data: AttendanceDTO) => {
-    const res = await axios.post(`${API_URL}/attendances`, data);
+    const token = localStorage.getItem("TERMINAL_TOKEN");
+
+    const res = await axios.post(`${API_URL}/attendances`, data, {
+      headers: {
+        "X-TERMINAL-TOKEN": token,
+      },
+    });
+
     return res.data;
   },
 
