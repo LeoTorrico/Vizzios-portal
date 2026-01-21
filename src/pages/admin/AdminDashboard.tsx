@@ -10,7 +10,7 @@ import AttendanceList from "../../components/AttendanceList";
 export default function AdminDashboard() {
   const { branches, addBranch } = useBranches();
   const { employees, addEmployee } = useEmployees();
-  const { attendances, loading, error } = useAttendance();
+  const { attendances, loadingFetch, error } = useAttendance();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
               </p>
             </div>
             <div className="p-6">
-              {loading && (
+              {loadingFetch && (
                 <div className="flex items-center justify-center p-8">
                   <div className="flex items-center space-x-3">
                     <div className="animate-spin rounded-full h-6 w-6 border-2 border-[#036133] border-t-transparent"></div>

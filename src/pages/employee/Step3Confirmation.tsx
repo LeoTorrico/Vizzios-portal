@@ -6,9 +6,9 @@ import { useAttendance } from "../../hooks/useAttendance";
 
 export default function Step3Confirmation() {
   const navigate = useNavigate();
-  const { registerAttendance, loading } = useAttendance();
+  const { registerAttendance, loadingRegister } = useAttendance();
 
-  const carnet = sessionStorage.getItem("employeeId"); // tu backend lo llama "carnet"
+  const carnet = sessionStorage.getItem("employeeId");
   const imageBase64 = sessionStorage.getItem("employeePhoto");
 
   const now = new Date();
@@ -89,10 +89,10 @@ export default function Step3Confirmation() {
         </div>
 
         <Button
-          text={loading ? "Registrando..." : "Registrar asistencia"}
+          text={loadingRegister ? "Registrando..." : "Registrar asistencia"}
           onClick={handleRegister}
           color="#F6941F"
-          disabled={loading}
+          disabled={loadingRegister}
         />
       </div>
     </div>
