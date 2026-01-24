@@ -1,8 +1,13 @@
-// AttendanceList Component
 export default function AttendanceList({
   attendances,
+  meta,
+  onNext,
+  onPrev,
 }: {
   attendances: any[];
+  meta?: any;
+  onNext?: () => void;
+  onPrev?: () => void;
 }) {
   if (attendances.length === 0) {
     return (
@@ -36,7 +41,7 @@ export default function AttendanceList({
     <div>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-800">
-          Registros de Asistencia ({attendances.length})
+          Historial de Asistencias {meta?.total ? `(${meta.total})` : ""}
         </h3>
         <div className="flex items-center space-x-4 text-sm">
           <div className="flex items-center space-x-2">
@@ -50,13 +55,12 @@ export default function AttendanceList({
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 mb-6">
         {attendances.map((attendance) => (
           <div
             key={attendance.id}
             className="group bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
           >
-            {/* Status Header */}
             <div
               className={`h-1 ${
                 attendance.type === "IN"
@@ -67,7 +71,6 @@ export default function AttendanceList({
 
             <div className="p-6">
               <div className="flex items-start space-x-4">
-                {/* Image */}
                 {attendance.imageUrl && (
                   <div className="flex-shrink-0">
                     <div className="relative">
@@ -117,7 +120,6 @@ export default function AttendanceList({
                   </div>
                 )}
 
-                {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -172,7 +174,6 @@ export default function AttendanceList({
                       </div>
                     </div>
 
-                    {/* Timestamp */}
                     <div className="text-right">
                       <p className="text-lg font-bold text-gray-900">
                         {new Date(attendance.recordedAt).toLocaleTimeString(
@@ -180,7 +181,7 @@ export default function AttendanceList({
                           {
                             hour: "2-digit",
                             minute: "2-digit",
-                          }
+                          },
                         )}
                       </p>
                       <p className="text-sm text-gray-500">
@@ -190,13 +191,12 @@ export default function AttendanceList({
                             year: "numeric",
                             month: "short",
                             day: "numeric",
-                          }
+                          },
                         )}
                       </p>
                     </div>
                   </div>
 
-                  {/* Employee Details */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -250,11 +250,48 @@ export default function AttendanceList({
               </div>
             </div>
 
-            {/* Hover Effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#036133]/3 to-[#F7941F]/3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
           </div>
         ))}
       </div>
+
+      {meta && (
+        <div className="flex items-center justify-between border-t border-gray-200 pt-4 mt-6">
+          <div className="text-sm text-gray-500">
+            Página{" "}
+            <span className="font-medium text-gray-900">{meta.page}</span> de{" "}
+            <span className="font-medium text-gray-900">{meta.lastPage}</span>
+          </div>
+
+          <div className="flex space-x-2">
+            <button
+              onClick={onPrev}
+              disabled={Number(meta.page) === 1}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 
+                ${
+                  Number(meta.page) === 1
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:text-[#036133]"
+                }`}
+            >
+              Anterior
+            </button>
+
+            <button
+              onClick={onNext}
+              disabled={Number(meta.page) >= meta.lastPage}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 
+                ${
+                  Number(meta.page) >= meta.lastPage
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-[#036133] text-white hover:bg-[#024c28] shadow-sm"
+                }`}
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
