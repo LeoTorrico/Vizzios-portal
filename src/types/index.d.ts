@@ -6,7 +6,6 @@ export interface EmployeeRecord {
 
 export interface AttendanceDTO {
   carnet: string;
-  type: "IN" | "OUT";
   recordedAt: string;
   imageBase64: string;
 }

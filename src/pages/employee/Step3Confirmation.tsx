@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import Button from "../../components/Button";
 import StepHeader from "../../components/StepHeader";
 import { useAttendance } from "../../hooks/useAttendance";
@@ -21,15 +20,11 @@ export default function Step3Confirmation() {
     second: "2-digit",
   });
 
-  // Estado para IN/OUT
-  const [type, setType] = useState<"IN" | "OUT">("IN");
-
   const handleRegister = async () => {
     if (!carnet || !imageBase64) return alert("Faltan datos del empleado");
     try {
       await registerAttendance({
         carnet,
-        type, // <-- dinámico
         recordedAt: now.toISOString(),
         imageBase64,
       });
@@ -66,25 +61,6 @@ export default function Step3Confirmation() {
           <div className="text-center">
             <p className="text-gray-600 text-sm">Carnet</p>
             <p className="text-lg font-semibold text-gray-800">{carnet}</p>
-          </div>
-
-          {/* Dropdown Entrada / Salida */}
-          <div className="w-full">
-            <label
-              htmlFor="type"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Tipo de registro
-            </label>
-            <select
-              id="type"
-              value={type}
-              onChange={(e) => setType(e.target.value as "IN" | "OUT")}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#036133] focus:outline-none"
-            >
-              <option value="IN">Entrada</option>
-              <option value="OUT">Salida</option>
-            </select>
           </div>
         </div>
 
