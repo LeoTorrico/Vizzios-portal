@@ -8,6 +8,7 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import AttendancesPage from "../pages/admin/AttendancesPage";
 import EmployeesPage from "../pages/admin/EmployeesPage";
 import BranchesPage from "../pages/admin/BranchesPage";
+import AttendanceDashboardPage from "../pages/admin/AttendanceDashboardPage";
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -20,7 +21,7 @@ export default function AppRouter() {
         <Route path="/admin/sucursales" element={<BranchesPage />} />
         <Route path="/admin/empleados" element={<EmployeesPage />} />
         <Route path="/admin/asistencias" element={<AttendancesPage />} />
-
+        <Route path="/admin/reporte" element={<AttendanceDashboardPage />} />
         <Route path="/" element={<Navigate to="/empleado" />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

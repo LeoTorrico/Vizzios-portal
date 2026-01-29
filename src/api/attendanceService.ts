@@ -18,4 +18,9 @@ export const attendanceService = {
     const res = await axios.get(`${API_URL}/attendances`, { params });
     return res.data as PaginatedResponse;
   },
+
+  getDashboard: async (params: any = {}): Promise<PaginatedResponse> => {
+    const res = await axios.get(`${API_URL}/attendances/dashboard`, { params });
+    return res.data as PaginatedResponse;
+  },
 };
