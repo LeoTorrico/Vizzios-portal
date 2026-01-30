@@ -11,7 +11,6 @@ export async function createEmployee(payload: {
   carnet: string;
   firstName: string;
   lastName?: string;
-  branchId: string;
 }) {
   const { data } = await axios.post(`${API_URL}/employees`, payload);
   return data;

@@ -16,7 +16,6 @@ export function useEmployees() {
     carnet: string;
     firstName: string;
     lastName?: string;
-    branchId: string;
   }) => {
     const newEmp = await createEmployee(emp);
     setEmployees((prev) => [newEmp, ...prev]);

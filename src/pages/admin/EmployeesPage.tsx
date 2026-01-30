@@ -1,12 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import EmployeeForm from "../../components/EmployeeForm";
 import EmployeeList from "../../components/EmployeeList";
-import { useBranches } from "../../hooks/useBranches";
 import { useEmployees } from "../../hooks/useEmployees";
 
 export default function EmployeesPage() {
   const navigate = useNavigate();
-  const { branches } = useBranches();
   const { employees, addEmployee } = useEmployees();
 
   return (
@@ -73,8 +71,8 @@ export default function EmployeesPage() {
             </p>
           </div>
           <div className="p-6 space-y-6">
-            <EmployeeForm onSubmit={addEmployee} branches={branches} />
-            <EmployeeList employees={employees} branches={branches} />
+            <EmployeeForm onSubmit={addEmployee} />
+            <EmployeeList employees={employees} />
           </div>
         </div>
       </div>
