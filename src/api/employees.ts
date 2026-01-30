@@ -15,3 +15,19 @@ export async function createEmployee(payload: {
   const { data } = await axios.post(`${API_URL}/employees`, payload);
   return data;
 }
+
+export async function updateEmployee(
+  carnet: string,
+  payload: {
+    firstName?: string;
+    lastName?: string;
+  },
+) {
+  const { data } = await axios.patch(`${API_URL}/employees/${carnet}`, payload);
+  return data;
+}
+
+export async function deleteEmployee(carnet: string) {
+  const { data } = await axios.delete(`${API_URL}/employees/${carnet}`);
+  return data;
+}

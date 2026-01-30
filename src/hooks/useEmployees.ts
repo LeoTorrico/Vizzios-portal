@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { getEmployees, createEmployee } from "../api/employees";
+import {
+  getEmployees,
+  createEmployee,
+  updateEmployee,
+  deleteEmployee,
+} from "../api/employees";
 
 export function useEmployees() {
   const [employees, setEmployees] = useState<any[]>([]);
@@ -21,9 +26,27 @@ export function useEmployees() {
     setEmployees((prev) => [newEmp, ...prev]);
   };
 
+  const editEmployee = async (
+    carnet: string,
+    emp: {
+      firstName?: string;
+      lastName?: string;
+    },
+  ) => {
+    const updatedEmp = await updateEmployee(carnet, emp);
+    setEmployees((prev) =>
+      prev.map((e) => (e.carnet === carnet ? updatedEmp : e)),
+    );
+  };
+
+  const removeEmployee = async (carnet: string) => {
+    await deleteEmployee(carnet);
+    setEmployees((prev) => prev.filter((e) => e.carnet !== carnet));
+  };
+
   useEffect(() => {
     fetchEmployees();
   }, []);
 
-  return { employees, loading, addEmployee };
+  return { employees, loading, addEmployee, editEmployee, removeEmployee };
 }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EmployeeForm from "../../components/EmployeeForm";
 import EmployeeList from "../../components/EmployeeList";
@@ -5,7 +6,41 @@ import { useEmployees } from "../../hooks/useEmployees";
 
 export default function EmployeesPage() {
   const navigate = useNavigate();
-  const { employees, addEmployee } = useEmployees();
+  const { employees, addEmployee, editEmployee, removeEmployee } =
+    useEmployees();
+  const [editingEmployee, setEditingEmployee] = useState<any>(null);
+
+  const handleSubmit = async (emp: {
+    carnet: string;
+    firstName: string;
+    lastName?: string;
+  }) => {
+    if (editingEmployee) {
+      // Modo edición: solo enviar firstName y lastName
+      await editEmployee(emp.carnet, {
+        firstName: emp.firstName,
+        lastName: emp.lastName,
+      });
+      setEditingEmployee(null);
+    } else {
+      // Modo creación
+      await addEmployee(emp);
+    }
+  };
+
+  const handleEdit = (employee: any) => {
+    setEditingEmployee(employee);
+    // Scroll suave hacia el formulario
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingEmployee(null);
+  };
+
+  const handleDelete = async (carnet: string) => {
+    await removeEmployee(carnet);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -70,9 +105,18 @@ export default function EmployeesPage() {
               Registra y gestiona tu personal
             </p>
           </div>
+
           <div className="p-6 space-y-6">
-            <EmployeeForm onSubmit={addEmployee} />
-            <EmployeeList employees={employees} />
+            <EmployeeForm
+              onSubmit={handleSubmit}
+              editingEmployee={editingEmployee}
+              onCancelEdit={handleCancelEdit}
+            />
+            <EmployeeList
+              employees={employees}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           </div>
         </div>
       </div>
