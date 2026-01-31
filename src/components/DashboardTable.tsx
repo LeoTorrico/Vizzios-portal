@@ -47,8 +47,12 @@ export default function DashboardTable({ data, loading }: DashboardTableProps) {
   };
 
   // Función para formatear fecha
+  // Función para formatear fecha
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    // Parsear como fecha local, NO como UTC
+    const [year, month, day] = dateString.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+
     return date.toLocaleDateString("es-BO", {
       day: "2-digit",
       month: "short",
