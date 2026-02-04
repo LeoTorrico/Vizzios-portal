@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_BASE_URL;
+import { adminClient } from "../api/adminClient";
 
 export async function getBranches() {
-  const { data } = await axios.get(`${API_URL}/branches`);
+  const { data } = await adminClient.get(`/branches`);
   return data;
 }
 
@@ -11,6 +9,6 @@ export async function createBranch(payload: {
   name: string;
   description?: string;
 }) {
-  const { data } = await axios.post(`${API_URL}/branches`, payload);
+  const { data } = await adminClient.post(`/branches`, payload);
   return data;
 }

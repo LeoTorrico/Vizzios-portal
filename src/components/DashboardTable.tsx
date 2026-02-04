@@ -60,7 +60,21 @@ export default function DashboardTable({ data, loading }: DashboardTableProps) {
     });
   };
 
-  // Vista móvil (cards)
+  const formatHoursMinutes = (totalHoras: number): string => {
+    const horas = Math.floor(totalHoras);
+    const minutos = Math.round((totalHoras - horas) * 60);
+
+    if (horas === 0) {
+      return `${minutos} min`;
+    }
+
+    if (minutos === 0) {
+      return `${horas}h`;
+    }
+
+    return `${horas}h ${minutos}min`;
+  };
+
   const MobileView = () => (
     <div className="md:hidden space-y-4">
       {data.map((record, index) => (
@@ -97,7 +111,7 @@ export default function DashboardTable({ data, loading }: DashboardTableProps) {
                     : "bg-red-100 text-red-700"
               }`}
             >
-              {record.totalHoras.toFixed(1)}h
+              {formatHoursMinutes(record.totalHoras)}
             </span>
           </div>
 
@@ -182,12 +196,11 @@ export default function DashboardTable({ data, loading }: DashboardTableProps) {
     </div>
   );
 
-  // Vista desktop (tabla)
   const DesktopView = () => (
     <div className="hidden md:block overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="bg-linear-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
+          <tr className="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-200">
             <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
               Fecha
             </th>
@@ -261,17 +274,22 @@ export default function DashboardTable({ data, loading }: DashboardTableProps) {
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold ${
-                    record.totalHoras >= 8
-                      ? "bg-green-100 text-green-700"
-                      : record.totalHoras >= 4
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {record.totalHoras.toFixed(1)}h
-                </span>
+                <div className="flex flex-col items-start">
+                  <span
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold ${
+                      record.totalHoras >= 8
+                        ? "bg-green-100 text-green-700"
+                        : record.totalHoras >= 4
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {formatHoursMinutes(record.totalHoras)}
+                  </span>
+                  <span className="text-xs text-gray-500 mt-1">
+                    ({record.totalHoras.toFixed(2)}h)
+                  </span>
+                </div>
               </td>
             </tr>
           ))}

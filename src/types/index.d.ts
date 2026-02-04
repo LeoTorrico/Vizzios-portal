@@ -19,3 +19,19 @@ export interface PaginatedResponse {
     limit: number | string;
   };
 }
+
+export interface User {
+  id: string;
+  username: string;
+  role: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  user: User;
+}
+
+export interface LoginCredentials {
+  username: string;
+  password: string;
+}
