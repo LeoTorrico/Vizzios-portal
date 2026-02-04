@@ -73,7 +73,6 @@ export const useAttendance = () => {
     setError(null);
     try {
       await attendanceService.register(data);
-      await fetchAttendances();
     } catch (err: any) {
       setError(err.message || "Error inesperado");
       throw err;

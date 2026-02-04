@@ -1,12 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import StepHeader from "../../components/StepHeader";
-import { useAttendance } from "../../hooks/useAttendance";
+import { useEmployeeAttendance } from "../../hooks/useEmployeeAttendance";
 
 export default function Step3Confirmation() {
   const navigate = useNavigate();
-  const { registerAttendance, loadingRegister } = useAttendance();
-
+  const { registerAttendance, loadingRegister } = useEmployeeAttendance();
   const carnet = sessionStorage.getItem("employeeId");
   const imageBase64 = sessionStorage.getItem("employeePhoto");
 
