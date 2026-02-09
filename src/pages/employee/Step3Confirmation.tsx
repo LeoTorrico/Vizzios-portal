@@ -20,14 +20,20 @@ export default function Step3Confirmation() {
   });
 
   const handleRegister = async () => {
-    if (!carnet || !imageBase64) return alert("Faltan datos del empleado");
+    if (!carnet || !imageBase64) {
+      alert("Faltan datos del empleado");
+      return;
+    }
+
     try {
-      await registerAttendance({
+      const response: any = await registerAttendance({
         carnet,
         recordedAt: now.toISOString(),
         imageBase64,
       });
-      alert("Asistencia registrada correctamente");
+
+      alert(response.message || "Asistencia registrada correctamente");
+
       sessionStorage.clear();
       navigate("/empleado");
     } catch {
