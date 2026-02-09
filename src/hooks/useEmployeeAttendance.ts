@@ -10,7 +10,8 @@ export const useEmployeeAttendance = () => {
     setLoadingRegister(true);
     setError(null);
     try {
-      await attendanceService.register(data);
+      const response = await attendanceService.register(data);
+      return response;
     } catch (err: any) {
       setError(err.message || "Error inesperado");
       throw err;
