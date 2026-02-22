@@ -11,6 +11,7 @@ import AttendancesPage from "../pages/admin/AttendancesPage";
 import EmployeesPage from "../pages/admin/EmployeesPage";
 import BranchesPage from "../pages/admin/BranchesPage";
 import AttendanceDashboardPage from "../pages/admin/AttendanceDashboardPage";
+import ReportsPage from "../pages/admin/ReportsPage";
 
 export default function AppRouter() {
   return (
@@ -38,6 +39,7 @@ export default function AppRouter() {
               path="/admin/reporte"
               element={<AttendanceDashboardPage />}
             />
+            <Route path="/admin/reports" element={<ReportsPage />} />
           </Route>
 
           {/* Redirecciones */}
