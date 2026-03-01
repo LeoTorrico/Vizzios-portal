@@ -1,3 +1,6 @@
+import { useState } from "react";
+import VacationModal from "./VacationModal";
+
 export default function EmployeeList({
   employees,
   onEdit,
@@ -7,6 +10,8 @@ export default function EmployeeList({
   onEdit: (employee: any) => void;
   onDelete: (carnet: string) => void;
 }) {
+  const [vacationEmployee, setVacationEmployee] = useState<any>(null);
+
   if (employees.length === 0) {
     return (
       <div className="text-center py-12">
@@ -120,6 +125,27 @@ export default function EmployeeList({
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
+                  {/* Botón Vacaciones */}
+                  <button
+                    onClick={() => setVacationEmployee(employee)}
+                    className="p-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors duration-200"
+                    title="Gestionar Vacaciones"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+                      />
+                    </svg>
+                  </button>
+
                   {/* Botón Editar */}
                   <button
                     onClick={() => onEdit(employee)}
@@ -177,6 +203,14 @@ export default function EmployeeList({
           </div>
         ))}
       </div>
+
+      {vacationEmployee && (
+        <VacationModal
+          employeeCarnet={vacationEmployee.carnet}
+          employeeName={`${vacationEmployee.firstName} ${vacationEmployee.lastName}`}
+          onClose={() => setVacationEmployee(null)}
+        />
+      )}
     </div>
   );
 }

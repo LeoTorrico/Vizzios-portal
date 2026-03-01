@@ -53,8 +53,8 @@ export default function ReportsPage() {
       console.error(err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Error al generar reporte",
+        err.message ||
+        "Error al generar reporte",
       );
     } finally {
       setLoading(false);
@@ -106,11 +106,10 @@ export default function ReportsPage() {
                 setData(null);
                 setError("");
               }}
-              className={`flex-1 py-4 px-2 text-sm md:text-base text-center font-semibold transition-all ${
-                activeTab === "weekly"
-                  ? "text-[#036133] border-b-4 border-[#036133] bg-green-50/50"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-              }`}
+              className={`flex-1 py-4 px-2 text-sm md:text-base text-center font-semibold transition-all ${activeTab === "weekly"
+                ? "text-[#036133] border-b-4 border-[#036133] bg-green-50/50"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                }`}
             >
               Reporte Semanal (Individual)
             </button>
@@ -120,11 +119,10 @@ export default function ReportsPage() {
                 setData(null);
                 setError("");
               }}
-              className={`flex-1 py-4 px-2 text-sm md:text-base text-center font-semibold transition-all ${
-                activeTab === "monthly"
-                  ? "text-[#F7941F] border-b-4 border-[#F7941F] bg-orange-50/50"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-              }`}
+              className={`flex-1 py-4 px-2 text-sm md:text-base text-center font-semibold transition-all ${activeTab === "monthly"
+                ? "text-[#F7941F] border-b-4 border-[#F7941F] bg-orange-50/50"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                }`}
             >
               Reporte Mensual (General)
             </button>
@@ -224,11 +222,10 @@ export default function ReportsPage() {
               <button
                 onClick={handleSearch}
                 disabled={loading}
-                className={`w-full lg:col-span-1 xl:col-span-1 h-[46px] rounded-lg text-white font-medium shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 ${
-                  activeTab === "weekly"
-                    ? "bg-[#036133] hover:bg-[#024c28]"
-                    : "bg-[#F7941F] hover:bg-[#d97f17]"
-                } disabled:opacity-50 disabled:cursor-not-allowed mt-auto`}
+                className={`w-full lg:col-span-1 xl:col-span-1 h-[46px] rounded-lg text-white font-medium shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 ${activeTab === "weekly"
+                  ? "bg-[#036133] hover:bg-[#024c28]"
+                  : "bg-[#F7941F] hover:bg-[#d97f17]"
+                  } disabled:opacity-50 disabled:cursor-not-allowed mt-auto`}
               >
                 {loading ? (
                   <span className="animate-pulse">Generando...</span>
@@ -363,7 +360,14 @@ export default function ReportsPage() {
                           {data.desglose.map((day: any, idx: number) => (
                             <tr
                               key={idx}
-                              className={`hover:bg-gray-50 transition-colors ${day.incompleto ? "bg-red-50/40" : ""}`}
+                              className={`hover:bg-gray-50 transition-colors ${day.status === "VACACIONES"
+                                ? "bg-blue-50/50"
+                                : day.status === "AUSENCIA"
+                                  ? "bg-gray-50/50 opacity-75"
+                                  : day.status === "INCOMPLETO"
+                                    ? "bg-red-50/40"
+                                    : ""
+                                }`}
                             >
                               <td className="p-3 md:p-4 text-gray-800 text-sm md:text-base">
                                 {day.fecha}
@@ -389,7 +393,15 @@ export default function ReportsPage() {
                                 {formatDecimalToHHMM(day.horas)}
                               </td>
                               <td className="p-3 md:p-4 text-center">
-                                {day.incompleto ? (
+                                {day.status === "VACACIONES" ? (
+                                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 uppercase tracking-wide">
+                                    Vacaciones
+                                  </span>
+                                ) : day.status === "AUSENCIA" ? (
+                                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-500 uppercase tracking-wide">
+                                    Falta
+                                  </span>
+                                ) : day.status === "INCOMPLETO" ? (
                                   <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
                                     Revisar
                                   </span>
@@ -445,15 +457,14 @@ export default function ReportsPage() {
                                   >
                                     <div className="flex items-center gap-3">
                                       <div
-                                        className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm ${
-                                          i === 0
-                                            ? "bg-gradient-to-br from-yellow-400 to-[#F7941F]"
-                                            : i === 1
-                                              ? "bg-gradient-to-br from-gray-300 to-gray-500"
-                                              : i === 2
-                                                ? "bg-gradient-to-br from-amber-600 to-amber-800"
-                                                : "bg-[#036133]/60"
-                                        }`}
+                                        className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm ${i === 0
+                                          ? "bg-gradient-to-br from-yellow-400 to-[#F7941F]"
+                                          : i === 1
+                                            ? "bg-gradient-to-br from-gray-300 to-gray-500"
+                                            : i === 2
+                                              ? "bg-gradient-to-br from-amber-600 to-amber-800"
+                                              : "bg-[#036133]/60"
+                                          }`}
                                       >
                                         {i + 1}
                                       </div>
@@ -466,9 +477,16 @@ export default function ReportsPage() {
                                         </p>
                                       </div>
                                     </div>
-                                    <span className="font-bold text-[#036133] text-sm bg-green-50 px-2 py-1 rounded">
-                                      {formatDecimalToHHMM(emp.horas)}
-                                    </span>
+                                    <div className="text-right">
+                                      <span className="font-bold text-[#036133] text-sm bg-green-50 px-2 py-1 rounded block">
+                                        {formatDecimalToHHMM(emp.horas)}
+                                      </span>
+                                      {emp.diasVacacion > 0 && (
+                                        <span className="text-[10px] text-blue-600 font-semibold uppercase tracking-wider mt-1 block">
+                                          {emp.diasVacacion} d. vacación
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
                                 ),
                               )}
