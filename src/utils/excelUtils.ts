@@ -10,18 +10,18 @@ export const downloadWeeklyExcel = (data: any) => {
     Entrada: dia.entrada || "--",
     Salida: dia.salida || "--",
     Horas: formatDecimalToHHMM(dia.horas),
-    Estado: dia.incompleto ? "INCOMPLETO" : "OK",
+    Estado: dia.status || (dia.incompleto ? "INCOMPLETO" : "OK"),
   }));
 
   // Fila de totales
-  rows.push({});
-  rows.push({
+  const totalRow: any = {
     Fecha: "TOTAL SEMANA",
     Horas: formatDecimalToHHMM(data.summary.totalHoras),
     Estado: `Prom. Diario: ${formatDecimalToHHMM(data.summary.promedioDiario)}`,
-  });
+  };
 
-  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const finalRows = [...rows, {}, totalRow];
+  const worksheet = XLSX.utils.json_to_sheet(finalRows);
 
   // Ajustar ancho de columnas
   const wscols = [
@@ -67,13 +67,14 @@ export const downloadMonthlyExcel = (data: any) => {
         Carnet: e.carnet,
         Nombre: e.nombre,
         Horas: e.horas,
+        Vacaciones: e.diasVacacion || 0,
       });
     });
   });
 
   if (topRows.length > 0) {
     const wsTop = XLSX.utils.json_to_sheet(topRows);
-    wsTop["!cols"] = [{ wch: 20 }, { wch: 15 }, { wch: 30 }, { wch: 10 }];
+    wsTop["!cols"] = [{ wch: 20 }, { wch: 15 }, { wch: 30 }, { wch: 10 }, { wch: 12 }];
     XLSX.utils.book_append_sheet(workbook, wsTop, "Detalle Empleados");
   }
 
