@@ -9,6 +9,14 @@ export const reportsService = {
     return res.data;
   },
 
+  getMonthlyEmployee: async (year: number, month: number, carnet: string, branchId?: string) => {
+    const params: any = { year, month, employeeCarnet: carnet };
+    if (branchId) params.branchId = branchId;
+
+    const res = await adminClient.get("/reports/monthly-employee", { params });
+    return res.data;
+  },
+
   getMonthly: async (year: number, month: number, branchId?: string) => {
     const params: any = { year, month };
     if (branchId) params.branchId = branchId;

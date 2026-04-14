@@ -43,6 +43,47 @@ export const downloadWeeklyExcel = (data: any) => {
   saveAs(blob, fileName);
 };
 
+export const downloadMonthlyEmployeeExcel = (data: any) => {
+  // Filas principales
+  const rows = data.desglose.map((dia: any) => ({
+    Fecha: dia.fecha,
+    Día: dia.diaSemana,
+    Entrada: dia.entrada || "--",
+    Salida: dia.salida || "--",
+    Horas: formatDecimalToHHMM(dia.horas),
+    Estado: dia.status || (dia.incompleto ? "INCOMPLETO" : "OK"),
+  }));
+
+  // Fila de totales
+  const totalRow: any = {
+    Fecha: "TOTAL MES",
+    Horas: formatDecimalToHHMM(data.summary.totalHoras),
+    Estado: `Prom. Diario: ${formatDecimalToHHMM(data.summary.promedioDiario)}`,
+  };
+
+  const finalRows = [...rows, {}, totalRow];
+  const worksheet = XLSX.utils.json_to_sheet(finalRows);
+
+  // Ajustar ancho de columnas
+  const wscols = [
+    { wch: 12 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 15 },
+  ];
+  worksheet["!cols"] = wscols;
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte Mensual");
+
+  const fileName = `Reporte_${data.employee.carnet}_${data.period.month}_${data.period.year}.xlsx`;
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+  saveAs(blob, fileName);
+};
+
 export const downloadMonthlyExcel = (data: any) => {
   const rows = data.branches.map((sucursal: any) => ({
     Sucursal: sucursal.branchName,

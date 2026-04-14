@@ -4,6 +4,7 @@ import { reportsService } from "../../api/reportsService";
 import {
   downloadWeeklyExcel,
   downloadMonthlyExcel,
+  downloadMonthlyEmployeeExcel,
 } from "../../utils/excelUtils";
 import { formatDecimalToHHMM } from "../../utils/formatUtils";
 // Importamos los hooks para alimentar los selects
@@ -12,7 +13,7 @@ import { useBranches } from "../../hooks/useBranches";
 
 export default function ReportsPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"weekly" | "monthly">("weekly");
+  const [activeTab, setActiveTab] = useState<"weekly" | "monthly-employee" | "monthly">("weekly");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState("");
@@ -40,6 +41,11 @@ export default function ReportsPage() {
           throw new Error("Complete todos los campos obligatorios");
         const res = await reportsService.getWeekly(carnet, weekDate);
         setData(res);
+      } else if (activeTab === "monthly-employee") {
+        if (!carnet || !year || !month)
+          throw new Error("Complete todos los campos obligatorios");
+        const res = await reportsService.getMonthlyEmployee(year, month, carnet, branchId || undefined);
+        setData(res);
       } else {
         // Pasamos el branchId si el usuario seleccionó uno
         const res = await reportsService.getMonthly(
@@ -64,6 +70,7 @@ export default function ReportsPage() {
   const handleExport = () => {
     if (!data) return;
     if (activeTab === "weekly") downloadWeeklyExcel(data);
+    else if (activeTab === "monthly-employee") downloadMonthlyEmployeeExcel(data);
     else downloadMonthlyExcel(data);
   };
 
@@ -115,6 +122,19 @@ export default function ReportsPage() {
             </button>
             <button
               onClick={() => {
+                setActiveTab("monthly-employee");
+                setData(null);
+                setError("");
+              }}
+              className={`flex-1 py-4 px-2 text-sm md:text-base text-center font-semibold transition-all ${activeTab === "monthly-employee"
+                ? "text-[#1d4ed8] border-b-4 border-[#1d4ed8] bg-blue-50/50"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                }`}
+            >
+              Reporte Mensual (Individual)
+            </button>
+            <button
+              onClick={() => {
                 setActiveTab("monthly");
                 setData(null);
                 setError("");
@@ -162,6 +182,70 @@ export default function ReportsPage() {
                       onChange={(e) => setWeekDate(e.target.value)}
                       disabled={loading}
                     />
+                  </div>
+                </>
+              ) : activeTab === "monthly-employee" ? (
+                <>
+                  <div className="space-y-2 lg:col-span-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      Empleado <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={carnet}
+                      onChange={(e) => setCarnet(e.target.value)}
+                      disabled={loadingEmployees || loading}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#1d4ed8]/20 focus:border-[#1d4ed8] outline-none transition-all bg-white disabled:bg-gray-100"
+                    >
+                      <option value="">-- Seleccionar Empleado --</option>
+                      {employees.map((emp: any) => (
+                        <option key={emp.carnet} value={emp.carnet}>
+                          {emp.firstName} {emp.lastName} ({emp.carnet})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2 lg:col-span-1">
+                    <label className="text-sm font-medium text-gray-700">Año</label>
+                    <input
+                      type="number"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#1d4ed8]/20 focus:border-[#1d4ed8] outline-none transition-all"
+                      value={year}
+                      onChange={(e) => setYear(Number(e.target.value))}
+                      disabled={loading}
+                    />
+                  </div>
+                  <div className="space-y-2 lg:col-span-1">
+                    <label className="text-sm font-medium text-gray-700">Mes</label>
+                    <select
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#1d4ed8]/20 focus:border-[#1d4ed8] outline-none transition-all bg-white"
+                      value={month}
+                      onChange={(e) => setMonth(Number(e.target.value))}
+                      disabled={loading}
+                    >
+                      {[...Array(12)].map((_, i) => (
+                        <option key={i} value={i + 1}>
+                          {new Date(0, i)
+                            .toLocaleString("es", { month: "long" })
+                            .toUpperCase()}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2 lg:col-span-2 xl:col-span-1">
+                    <label className="text-sm font-medium text-gray-700">Sucursal (Opcional)</label>
+                    <select
+                      value={branchId}
+                      onChange={(e) => setBranchId(e.target.value)}
+                      disabled={loadingBranches || loading}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#1d4ed8]/20 focus:border-[#1d4ed8] outline-none transition-all bg-white"
+                    >
+                      <option value="">Todas las sucursales</option>
+                      {branches.map((branch: any) => (
+                        <option key={branch.id} value={branch.id}>
+                          {branch.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </>
               ) : (
@@ -224,6 +308,8 @@ export default function ReportsPage() {
                 disabled={loading}
                 className={`w-full lg:col-span-1 xl:col-span-1 h-[46px] rounded-lg text-white font-medium shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 ${activeTab === "weekly"
                   ? "bg-[#036133] hover:bg-[#024c28]"
+                  : activeTab === "monthly-employee"
+                  ? "bg-[#1d4ed8] hover:bg-[#1e40af]"
                   : "bg-[#F7941F] hover:bg-[#d97f17]"
                   } disabled:opacity-50 disabled:cursor-not-allowed mt-auto`}
               >
@@ -274,11 +360,13 @@ export default function ReportsPage() {
                 {/* Header Resultados + Exportar */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 border-b border-gray-100 pb-4">
                   <div>
-                    {activeTab === "weekly" ? (
+                    {activeTab === "weekly" || activeTab === "monthly-employee" ? (
                       <h3 className="text-xl md:text-2xl font-bold text-gray-800">
                         {data.employee.firstName} {data.employee.lastName}
                         <span className="block text-sm font-normal text-gray-500 mt-1">
-                          Semana del {data.week.startDate} • CI:{" "}
+                          {activeTab === "weekly" 
+                            ? `Semana del ${data.week.startDate}` 
+                            : `Mes de ${data.period.monthName} ${data.period.year}`} • CI:{" "}
                           {data.employee.carnet}
                         </span>
                       </h3>
@@ -313,8 +401,8 @@ export default function ReportsPage() {
                   </button>
                 </div>
 
-                {/* VISTA SEMANAL */}
-                {activeTab === "weekly" && (
+                {/* VISTA SEMANAL E INDIVIDUAL MENSUAL */}
+                {(activeTab === "weekly" || activeTab === "monthly-employee") && (
                   <>
                     {/* Resumen Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
